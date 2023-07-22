@@ -24,6 +24,13 @@ func main() {
 	q, err := ch.QueueDeclare("Q", true, false, false, false, nil)
 	utils.CheckError(err, "Queue Declaration Failed")
 
+	err = ch.Qos(
+		1,
+		0,
+		false,
+	)
+	utils.CheckError(err, "Failed to set QoS")
+
 	done := make(chan bool)
 	go func() {
 		msgs, err := ch.Consume(q.Name, "", false, false, false, false, nil)

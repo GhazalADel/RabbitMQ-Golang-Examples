@@ -28,7 +28,8 @@ func main() {
 
 	inp := utils.GetInput()
 	err = ch.PublishWithContext(ctx, "", q.Name, false, false, amqp091.Publishing{
-		ContentType: "text/plain",
-		Body:        []byte(inp),
+		DeliveryMode: amqp091.Persistent,
+		ContentType:  "text/plain",
+		Body:         []byte(inp),
 	})
 }
