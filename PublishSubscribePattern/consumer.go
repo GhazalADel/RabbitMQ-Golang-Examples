@@ -8,10 +8,6 @@ import (
 )
 
 func main() {
-	/*
-	  I want to avoid doing a resource-intensive task immediately and having to wait for it to complete,
-	  Instead we schedule the task to be done later.
-	*/
 	conn, err := amqp091.Dial("amqp://guest:guest@localhost:5672")
 	utils.CheckError(err, "Connection To Rabbit Failed")
 	defer conn.Close()
@@ -20,15 +16,14 @@ func main() {
 	utils.CheckError(err, "Channel Creation Failed")
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare("Q", true, false, false, false, nil)
+	err = ch.ExchangeDeclare("MyExchange", "fanout", true, false, false, false, nil)
+	utils.CheckError(err, "Exchange Declaration Failed")
+
+	q, err := ch.QueueDeclare("", true, false, false, false, nil)
 	utils.CheckError(err, "Queue Declaration Failed")
 
-	err = ch.Qos(
-		1,
-		0,
-		false,
-	)
-	utils.CheckError(err, "Failed to set QoS")
+	err = ch.QueueBind(q.Name, "", "MyExchange", false, nil)
+	utils.CheckError(err, "Bind Exchange to Queue Failed")
 
 	done := make(chan bool)
 	go func() {
