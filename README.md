@@ -1,4 +1,4 @@
-# RabbitPlayground
+# RabbitMQ-Golang-Examples
 
 This repository contains Golang code samples demonstrating the usage of RabbitMQ based on the official tutorial.
 
